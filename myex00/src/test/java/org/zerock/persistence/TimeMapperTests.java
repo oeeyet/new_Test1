@@ -14,6 +14,7 @@ import lombok.extern.log4j.Log4j;
 @ContextConfiguration("file:src/main/webapp/WEB-INF/spring/root-context.xml")
 @Log4j
 public class TimeMapperTests {
+
 	@Setter(onMethod_ = @Autowired)
 	private TimeMapper timeMapper;
 
@@ -23,10 +24,10 @@ public class TimeMapperTests {
 		log.info(timeMapper.getTime());
 	}
 
-//@Test
-//public void testGetTime2() {
-//	log.info("getTime2");
-//	log.info(timeMapper.getTime2());
-//}
+	@Test 
+	public void testGetTime2() {
+		log.info(timeMapper.getTime2());
+		log.info("getTIme2");
+	}
 
 }
