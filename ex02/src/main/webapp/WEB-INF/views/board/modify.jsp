@@ -4,6 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
+<!-- Heaer.jsp -->
 <jsp:include page="../includes/header.jsp"></jsp:include>
 
 <!-- Content Wrapper -->
@@ -208,112 +209,87 @@
 		</nav>
 		<!-- End of Topbar -->
 
-		<!-- Begin Page Content -->
-		<div class="container-fluid">
+		<!-- Input From -->
+		<div class="card-body mr-5 ml-5">
+			<h5 class="card-title text-center">Board Modify Page</h5>
 
-			<!-- Page Heading -->
-			<h1 class="h3 mb-2 text-gray-800">Tables</h1>
-			<p class="mb-4">
-				DataTables is a third party plugin that is used to generate the demo
-				table below. For more information about DataTables, please visit the
-				<a target="_blank" href="https://datatables.net">official
-					DataTables documentation</a>.
-			</p>
+			<form class="form-signin" role="form" action="/board/modify"
+				method="POST">
 
-			<!-- DataTales Example -->
-			<div class="card shadow mb-4">
-				<div class="card-header py-3">
-				<button id='regBtn' type="button" class="btn btn-xs pull-right" style="float: right">Register New Board</button>
-					<h6 class="m-0 font-weight-bold text-primary">Board List Page</h6>
+				<!-- Bno input -->
+				<div class="form-group">
+					<label for="Bno">Bno</label> <input class="form-control" name='bno'
+						value='<c:out value="${board.bno}"/>' readonly="readonly">
 				</div>
-				<div class="card-body">
-					<div class="table-responsive">
-						<table class="table table-bordered" id="dataTable" width="100%"
-							cellspacing="0">
-							<thead>
-								<tr>
-									<th>#번호</th>
-									<th>제목</th>
-									<th>작성자</th>
-									<th>작성일</th>
-									<th>수정일</th>
-								</tr>
-							</thead>
 
-							<c:forEach items="${list }" var="board">
-								<tr>
-									<td><c:out value="${board.bno }" /></td>
-									<td><a href='/board/get?bno=<c:out value="${board.bno }"/>'><c:out value="${board.title }" /></a></td>
-									<td><c:out value="${board.writer }" /></td>
-									<td><fmt:formatDate pattern="yyyy-MM-dd" value="${board.regdate }"/></td>
-									<td><fmt:formatDate pattern="yyyy-MM-dd" value="${board.updateDate }"/></td>
-								</tr>
-
-							</c:forEach>
-						</table>
-						
-						<!--Modal(모달) 추가  -->
-						<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
-						aria-labelledby="myModalLabel" aria-hidden="true">
-						<div class="modal-dialog">
-						<div class="modal-content">
-						<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&times;</button>
-						<h4 class="modal-title" id="myModalLabel">Modal title</h4>
-						</div>
-						<div class="modal-body">처리가 완료 되었습니다.</div>
-						<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button type="button" class="btn btn-primary">Save changes</button>
-						</div>
-						</div>
-						</div>
-						</div>
-						
-						
-					</div>
+				<!-- Title input -->
+				<div class="form-group">
+					<label for="Title">Title</label> <input class="form-control"
+						name='title' value='<c:out value="${board.title}"/>'>
 				</div>
-			</div>
 
+				<!-- Text input -->
+				<div class="form-group">
+					<label for="Content">Text Area</label>
+					<textarea class="form-control" name='content' rows="3"><c:out
+							value="${board.content}" /></textarea>
+				</div>
+
+				<!-- Writer input -->
+				<div class="form-group">
+					<label for='Writer'>Writer</label> <input class="form-control"
+						name='writer' value='<c:out value="${board.writer}"/>'
+						readonly="readonly">
+				</div>
+
+				<div class="form-group">
+					<label>RegDate</label> <input class="form-control" name='regDate'
+						value='<fmt:formatDate pattern = "yyyy/MM/dd" value = "${board.regdate}"/>'
+						readonly="readonly">
+				</div>
+
+				<div class="form-group">
+					<label>Update Date</label> <input class="form-control"
+						name="updateDate"
+						value='<fmt:formatDate pattern = "yyyy/MM/dd" value = "${board.updateDate}"/>'
+						readonly="readonly">
+				</div>
+
+				<button type="submit" data-oper='modify' class="btn btn-default">Modify</button>
+				<button type="submit" data-oper='remove' class="btn btn-danger">Remove</button>
+				<button type="submit" data-oper='list' class="btn btn-info">List</button>
 		</div>
-		<!-- /.container-fluid -->
-
 	</div>
+	</form>
 	<!-- End of Main Content -->
 
-
-
+	<!-- footer.jsp -->
 	<jsp:include page="../includes/footer.jsp"></jsp:include>
 
 	</body>
-	<!-- 양식 제출 확인  -->
-<script type="text/javascript">
-$(document).ready(function(){
-	var result = '<c:out value="${result}"/>';
-	
-	checkModal(result);
-	history.replaceState({}, null, null);
-	
-	function checkModal(result) {
-		
-		if(result == '' || history.state) {
-			return;
-		}
-		
-		if(parseInt(result) > 0) {
-			$(".modal-body").html("게시글" + parseInt(result) + 
-					" 번이 등록되었습니다.");
-		}
-		$("#myModal").modal("show");
-	}
-	$("#regBtn").on("click", function(){
-		
-		self.location ="/board/register";
-	})
-	
-});
+	<script type="text/javascript">
+		$(document).ready(function() {
+			var formObj = $("form");
+			$('button').on("click", function(e) {
+				e.preventDefault();
+
+				var operation = $(this).data("oper");
+				console.log(operation);
+
+				if (operation === 'remove') {
+					formObj.attr("action", "/board/remove");
+				} else if (operation === 'list') {
+					//move to list
+					formObj.attr("action", "/board/list").attr("method", "get");
+					formObj.empty();
+				/* 	self.location = "/board/list"; */
+					return;
+				}
+				formObj.submit();
+			});
+		});
+	</script>
 
 
-</script>
+
 	</html>
