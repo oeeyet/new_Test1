@@ -27,12 +27,8 @@ public class BoardController {
 	@GetMapping("/list")
 	public void list(Model model) {
 		log.info("list");
-		List<BoardVO> boardList = service.getList();
 		
-		boardList.forEach(board -> {
-			System.out.println(board);
-		});
-		// model.addAttribute("list", service.getList());
+		model.addAttribute("list", service.getList());
 	}
 	@PostMapping("/register")
 	public String register(BoardVO board, RedirectAttributes rttr) {
@@ -67,6 +63,10 @@ public class BoardController {
 			
 		}
 		return "redirect:/board/list";
+	}
+	@GetMapping("/register")
+	public void register() {
+		
 	}
 	
 }
