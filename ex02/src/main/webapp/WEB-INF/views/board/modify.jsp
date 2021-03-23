@@ -215,6 +215,10 @@
 
 			<form class="form-signin" role="form" action="/board/modify"
 				method="POST">
+				
+				<!-- 추가 -->
+				<input type='hidden' name='pageNum' value='<c:out value="${cri.pageNum }"/>'>
+				<input type='hidden' name='amount' value='<c:out value="${cri.amount }"/>'>
 
 				<!-- Bno input -->
 				<div class="form-group">
@@ -281,9 +285,14 @@
 				} else if (operation === 'list') {
 					//move to list
 					formObj.attr("action", "/board/list").attr("method", "get");
+					var pageNumTag = $("input[name='pageNum']").clone();
+					var amountTag = $("input[name='amount']").clone();
+
+
 					formObj.empty();
+					formObj.append(pageNumTag);
+					formObj.append(amountTag);
 				/* 	self.location = "/board/list"; */
-					return;
 				}
 				formObj.submit();
 			});
