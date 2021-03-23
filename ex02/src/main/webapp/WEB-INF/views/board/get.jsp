@@ -196,13 +196,13 @@
         <!-- Title input -->
         <div class="form-group">
           <label for="Title">Bno</label>
-          <input class="form-control" name="bno" value='<c:out value="${board.bno }"/>' readonly="readonly">
+          <input class="form-control" name="bno" value='${board.bno}' readonly="readonly">
         </div>
 
         <!-- Text input -->
         <div class="form-group">
           <label for="Content">Title</label>
-          <input class="form-control" name='title' value='<c:out value="${board.title }"/>' readonly="readonly">
+          <input class="form-control" name='title' value='${board.title}' readonly="readonly">
         </div>
 
         <!-- Writer input -->
@@ -215,7 +215,7 @@
         
         <div class="form-group">
           <label for="Writer">Writer</label>
-          <input class="form-control" name='writer' value="'<c:out value="${board.writer }"/>' readonly="readonly">
+          <input class="form-control" name='writer' value='${board.writer}' readonly="readonly">
         </div>
 
         <button data-oper='modify' class="btn btn-default"

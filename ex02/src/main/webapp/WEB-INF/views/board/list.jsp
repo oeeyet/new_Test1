@@ -223,7 +223,8 @@
 			<!-- DataTales Example -->
 			<div class="card shadow mb-4">
 				<div class="card-header py-3">
-				<button id='regBtn' type="button" class="btn btn-xs pull-right" style="float: right">Register New Board</button>
+					<button id='regBtn' type="button" class="btn btn-xs pull-right"
+						style="float: right">Register New Board</button>
 					<h6 class="m-0 font-weight-bold text-primary">Board List Page</h6>
 				</div>
 				<div class="card-body">
@@ -243,35 +244,63 @@
 							<c:forEach items="${list }" var="board">
 								<tr>
 									<td><c:out value="${board.bno }" /></td>
-									<td><a href='/board/get?bno=<c:out value="${board.bno }"/>'><c:out value="${board.title }" /></a></td>
+									<td><a
+										href='/board/get?bno=<c:out value="${board.bno }"/>'><c:out
+												value="${board.title }" /></a></td>
 									<td><c:out value="${board.writer }" /></td>
-									<td><fmt:formatDate pattern="yyyy-MM-dd" value="${board.regdate }"/></td>
-									<td><fmt:formatDate pattern="yyyy-MM-dd" value="${board.updateDate }"/></td>
+									<td><fmt:formatDate pattern="yyyy-MM-dd"
+											value="${board.regdate }" /></td>
+									<td><fmt:formatDate pattern="yyyy-MM-dd"
+											value="${board.updateDate }" /></td>
 								</tr>
 
 							</c:forEach>
 						</table>
-						
+
+						<div class='pul-right' style="float: right">
+							<ul class="pagination">
+								<c:if test="${pageMaker.prev }">
+									<li class="paginate_button previous"
+										style="padding: 10px 10px;"><a href="#">Previous</a></li>
+								</c:if>
+
+								<c:forEach var="num" begin="${pageMaker.startPage }"
+									end="${pageMaker.endPage }">
+									<li class="paginate_button" style="padding: 10px 10px;"><a
+										href="#">${ num }</a></li>
+								</c:forEach>
+
+								<c:if test="${pageMaker.next }">
+									<li class="paginate_button next" style="padding: 10px 10px;"><a
+										href="#">Next</a></li>
+								</c:if>
+							</ul>
+
+						</div>
+
+
 						<!--Modal(모달) 추가  -->
 						<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
-						aria-labelledby="myModalLabel" aria-hidden="true">
-						<div class="modal-dialog">
-						<div class="modal-content">
-						<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&times;</button>
-						<h4 class="modal-title" id="myModalLabel">Modal title</h4>
+							aria-labelledby="myModalLabel" aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal"
+											aria-hidden="true">&times;</button>
+										<h4 class="modal-title" id="myModalLabel">Modal title</h4>
+									</div>
+									<div class="modal-body">처리가 완료 되었습니다.</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-default"
+											data-dismiss="modal">Close</button>
+										<button type="button" class="btn btn-primary">Save
+											changes</button>
+									</div>
+								</div>
+							</div>
 						</div>
-						<div class="modal-body">처리가 완료 되었습니다.</div>
-						<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button type="button" class="btn btn-primary">Save changes</button>
-						</div>
-						</div>
-						</div>
-						</div>
-						
-						
+
+
 					</div>
 				</div>
 			</div>
@@ -288,32 +317,31 @@
 
 	</body>
 	<!-- 양식 제출 확인  -->
-<script type="text/javascript">
-$(document).ready(function(){
-	var result = '<c:out value="${result}"/>';
-	
-	checkModal(result);
-	history.replaceState({}, null, null);
-	
-	function checkModal(result) {
-		
-		if(result == '' || history.state) {
-			return;
-		}
-		
-		if(parseInt(result) > 0) {
-			$(".modal-body").html("게시글" + parseInt(result) + 
-					" 번이 등록되었습니다.");
-		}
-		$("#myModal").modal("show");
-	}
-	$("#regBtn").on("click", function(){
-		
-		self.location ="/board/register";
-	})
-	
-});
+	<script type="text/javascript">
+		$(document).ready(
+				function() {
+					var result = '<c:out value="${result}"/>';
 
+					checkModal(result);
+					history.replaceState({}, null, null);
 
-</script>
+					function checkModal(result) {
+
+						if (result == '' || history.state) {
+							return;
+						}
+
+						if (parseInt(result) > 0) {
+							$(".modal-body").html(
+									"게시글" + parseInt(result) + " 번이 등록되었습니다.");
+						}
+						$("#myModal").modal("show");
+					}
+					$("#regBtn").on("click", function() {
+
+						self.location = "/board/register";
+					})
+
+				});
+	</script>
 	</html>
