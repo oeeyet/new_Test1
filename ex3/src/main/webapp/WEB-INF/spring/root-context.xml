@@ -17,7 +17,7 @@
 
 
 		<property name="username" value="system"></property>
-		<property name="password" value="oracle"></property>
+		<property name="password" value="123456"></property>
 	</bean>
 
 	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource"
