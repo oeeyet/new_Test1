@@ -8816,3 +8816,9 @@ java.lang.ArrayIndexOutOfBoundsException: Index 34 out of bounds for length 34
 
 !ENTRY org.eclipse.m2e.logback.appender 2 0 2021-03-25 17:57:22.282
 !MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2021-03-25 17:59:20.714
+!MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2021-03-25 17:59:20.718
+!MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!

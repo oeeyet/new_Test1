@@ -284,7 +284,7 @@
 						str += "<div class='card-body'>";
 						str += "<div class='header d-flex justify-content-between'>";
 						str += "<h5 class='card-title'>" + list[i].replyer + " </h5>";
-						str += "<small>time:time:time</small></div>";
+						str += "<small>" + list[i].replyDate + "</small></div>";
 						str +=
 							"<p class='card-text'>" + list[i].reply + "</p></div></li>";
 
