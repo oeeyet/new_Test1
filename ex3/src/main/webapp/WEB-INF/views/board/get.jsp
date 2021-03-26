@@ -221,31 +221,72 @@
 
 			<button data-oper='modify' class="btn btn-default">Modify</button>
 			<button data-oper='list' class="btn btn-info">List</button>
-
+			<!-- 댓글 기능 처리 -->
 			<div class="card mt-5">
-				<h5 class="card-header">Featured</h5>
+				<h5 class="card-header d-flex justify-content-between">
+					Reply <a id="addReplyBtn" href="#" class="btn btn-primary">New Reply</a>
+				</h5>
+
 				<ul class="chat list-group list-group-flush">
 					<li class='list-group-item' data-rno='10'>
-						<div class='card-body'>
+						<!-- <div class='card-body'>
 							<div class="header d-flex justify-content-between">
 								<h5 class='card-title'>타이틀</h5>
 								<small>time:time:time</small>
 							</div>
-							<p class='card-text'>테스트 내용</p>
-						</div>
+							<p class='card-text'>테스트 내용</p> 
+
+						</div>-->
 					</li>
 			</div>
 			</li>
 
+			<!-- operForm 처리 -->
 			<form id='operForm' action="/board/modify" method="get">
 				<input type='hidden' id='bno' name='bno' value='<c:out value="${board.bno }"/>'> <input type='hidden'
 					name='pageNum' value='<c:out value="${cri.pageNum }"/>'> <input type='hidden' name='amount'
 					value='<c:out value="${cri.amount }"/>'>
-				<input type="hidden" name="keyword" value='<c:out value="${cri.keyword}"/>'>
-				<input type="hidden" name="type" value='<c:out value="${cri.type}"/>'>
+				<input type="hidden" name="keyword" value='<c:out value="${cri.keyword}"/>'> <input type="hidden" name="type"
+					value='<c:out value="${cri.type}"/>'>
 			</form>
 		</div>
 	</div>
+
+	<!-- 모달창 코드 -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">REPLY MODAL</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label>reply</label>
+						<input class="form-control" name="reply" value="New Reply!!!!">
+					</div>
+					<div class="form-group">
+						<label>replyer</label>
+						<input class="form-control" name="replyer" value="replyer">
+					</div>
+					<div class="form-group">
+						<label>Date</label>
+						<input class="form-control" name="replyDate" value="">
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button id="modalModBtn" type="button" class="btn btn-warning">Modify</button>
+					<button id="modalRemoveBtn" type="button" class="btn btn-danger">Remove</button>
+					<button id="modalRegisterBtn" type="button" class="btn btn-primary">Register</button>
+					<button id="modalCloseBtn" type="button" class="btn btn-default">Close </button>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+
 
 	<!-- End of Main Content -->
 
@@ -253,47 +294,161 @@
 	<jsp:include page="../includes/footer.jsp"></jsp:include>
 
 	</body>
+
+
+
 	<script type="text/javascript" src="/resources/js/reply.js"></script>
 
 	<!-- 이벤트 처리 -->
 	<script>
-		$(document).ready(function () {
+		$(document)
+			.ready(
+				function () {
 
-			var bnoValue = "${board.bno}";
-			var replyUL = $(".chat");
+					var bnoValue = "${board.bno}";
+					var replyUL = $(".chat");
 
-			showList(1);
+					showList(1);
 
-			function showList(page) {
-				replyService.getList({
-					bno: bnoValue,
-					page: page || 1
-				}, function (list) {
-					var str = "";
-					if (list == null || list.length == 0) {
-						replyUL.html("");
-						return;
+					function showList(page) {
+						replyService
+							.getList({
+									bno: bnoValue,
+									page: page || 1
+								},
+								function (list) {
+									var str = "";
+									if (list == null ||
+										list.length == 0) {
+										replyUL.html("");
+										return;
+									}
+
+
+
+									console.log(list.length);
+
+									/* 	<a href="#" class="btn btn-primary d-flex justify-content-between">Go</a> */
+
+									for (var i = 0, len = list.length || 0; i < len; i++) {
+
+										str += "<li class='list-group-item' data-rno='" + list[i].rno + "'>";
+										str += "<div class='card-body'>";
+										str += "<div class='header d-flex justify-content-between'>";
+										str += "<h5 class='card-title'>" +
+											list[i].replyer +
+											" </h5>";
+										str += "<small>" +
+											replyService
+											.displayTime(list[i].replyDate) +
+											"</small></div>";
+										str += "<p class='card-text'>" +
+											list[i].reply +
+											"</p></div></li>";
+
+									}
+									replyUL.html(str);
+
+								});
 					}
 
-					console.log(list.length);
+					// 새로운 댓글의 추가 버튼 이벤트 처리
+					var modal = $(".modal");
+					var modalInputReply = modal.find("input[name='reply']");
+					var modalInputReplyer = modal.find("input[name='replyer']");
+					var modalInputReplyDate = modal.find("input[name='replyDate']");
+
+					var modalModBtn = $("#modalModBtn");
+					var modalRemoveBtn = $("#modalRemoveBtn");
+					var modalRegisterBtn = $("#modalRegisterBtn");
+
+					$("#addReplyBtn").on("click", function (e) {
+
+						modal.find("input").val("");
+						modalInputReplyDate.closest("div").hide();
+						modal.find("button[id !='modalCloseBtn']").hide();
+
+						modalRegisterBtn.show();
+
+						$(".modal").modal("show");
+
+					});
+
+					// 댓글 등록 및 목록 갱신
+
+					modalRegisterBtn.on("click", function (e) {
+
+						var reply = {
+							reply: modalInputReply.val(),
+							replyer: modalInputReplyer.val(),
+							bno: bnoValue
+
+						};
+						replyService.add(reply, function (result) {
+							alert(result);
+
+							modal.find("input").val("");
+							modal.modal("hide");
+
+							showList(1); //새로 추가 된 댓글 확인용
+						});
+					})
 
 
-					for (var i = 0, len = list.length || 0; i < len; i++) {
+					// 댓글 조회 클릭 이벤트 처리
+					$(".chat").on("click", "li", function (e) {
 
-						str += "<li class='list-group-item' data-rno='" + list[i].rno + "'>";
-						str += "<div class='card-body'>";
-						str += "<div class='header d-flex justify-content-between'>";
-						str += "<h5 class='card-title'>" + list[i].replyer + " </h5>";
-						str += "<small>" + list[i].replyDate + "</small></div>";
-						str +=
-							"<p class='card-text'>" + list[i].reply + "</p></div></li>";
+						var rno = $(this).data("rno");
 
-					}
-					replyUL.html(str);
+						console.log(rno);
 
-				});
-			}
-		});
+						replyService.get(rno, function (reply) {
+
+							modalInputReply.val(reply.reply);
+							modalInputReplyer.val(reply.replyer);
+							modalInputReplyDate.val(replyService.displayTime(reply.replyDate)).attr("readonly", "readonly");
+							modal.data("rno", reply.rno);
+
+							modal.find("button[id !='modalCloseBtn']").hide();
+						
+							modalModBtn.show();
+							modalRemoveBtn.show();
+
+							$(".modal").modal("show");
+						});
+
+
+					});
+
+					// 댓글 수정
+					modalModBtn.on("click", function(e){
+
+						var reply = {rno:modal.data("rno"), reply: modalInputReply.val()};
+
+						replyService.update(reply, function(result){
+
+							alert(result);
+							modal.modal("hide");
+							showList(1);
+						
+					});
+				})
+				
+			// 댓글 삭제
+
+			modalRemoveBtn.on("click", function(e){
+
+				var rno = modal.data("rno");
+
+				replyService.remove(rno, function(result){
+
+					alert(result);
+					modal.modal("hide");
+					showList(1);
+				
+			});
+		})
+			});
 	</script>
 
 

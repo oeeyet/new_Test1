@@ -80,13 +80,24 @@ public class ReplyMapperTests {
 	}
 	
 //	5.페이징 처리 
-	@Test
+//	@Test 이거 맵퍼xml에서 막았다!
 	public void testList() {
 		
 		Criteria cri = new Criteria();
 		
 		//3145745L
 		List<ReplyVO> replies = mapper.getListWithPaging(cri, bnoArr[0]);
+		
+		replies.forEach(reply -> log.info(reply));
+	}
+
+// 페이징처리 테스트(idx_reply)
+	@Test
+	public void testList2() {
+		
+		Criteria cri = new Criteria(1, 10);
+		
+		List<ReplyVO> replies = mapper.getListWithPaging(cri, 1L);
 		
 		replies.forEach(reply -> log.info(reply));
 	}
