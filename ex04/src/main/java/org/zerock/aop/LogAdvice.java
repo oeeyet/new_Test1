@@ -16,13 +16,13 @@ import lombok.extern.log4j.Log4j;
 @Component
 public class LogAdvice {
 	
-	@Before("execution(* org.zerock.service.SampleService*.*(..))")
+//	@Before("execution(* org.zerock.service.SampleService*.*(..))")
 	public void logBefore() {
 		
 		log.info("========================");
 	}
 	
-	@Before("execution(* org.zerock.service.SampleService*.doAdd(String, String)) && args(str1, str2)")
+//	@Before("execution(* org.zerock.service.SampleService*.doAdd(String, String)) && args(str1, str2)")
 	public void logBeforeWithParam(String str1, String str2) {
 		
 		log.info("str1: " + str1);
@@ -30,7 +30,7 @@ public class LogAdvice {
 	}
 	
 	// 예외 처리 
-	@AfterThrowing(pointcut = "execution(* org.zerock.service.SampleService*.*(..))", throwing="exception") 
+//	@AfterThrowing(pointcut = "execution(* org.zerock.service.SampleService*.*(..))", throwing="exception") 
 	
 	public void logException(Exception exception){
 		

@@ -2,6 +2,7 @@ package org.zerock.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.zerock.mapper.Sample1Mapper;
 import org.zerock.mapper.Sample2Mapper;
 
@@ -18,6 +19,7 @@ public class SampleTxServiceImpl implements SampleTxService {
 	@Setter(onMethod_ = {@Autowired})
 	private Sample2Mapper mapper2;
 
+	@Transactional//만일 트렌젝션이 없다면 맵퍼1만 처리 된다 그러나트랜젝션을 사용하면 둘다 인설트 안된다!
 	@Override
 	public void addData(String value) {
 		
@@ -31,6 +33,7 @@ public class SampleTxServiceImpl implements SampleTxService {
 		
 		
 	}
+	
 	
 	
 	
