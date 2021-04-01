@@ -14,4 +14,7 @@ public class BoardVO {
 	private Date regdate;
 	private Date updateDate;
 	
+//	댓글의 숫자를 의미하는 인스턴스 변수를 추가
+	private int replyCnt;
+	
 }
