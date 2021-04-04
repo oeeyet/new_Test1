@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.zerock.domain.AttachFileDTO;
@@ -177,7 +180,7 @@ public class UploadController {
 		
 		log.info("fileName: " + fileName);
 		
-		File file = new File("/Users/eunjioh/Desktop/JINNY/CODING/Spring/upload/temp" + fileName);
+		File file = new File("/Users/eunjioh/Desktop/JINNY/CODING/Spring/upload/temp/" + fileName);
 		
 		log.info("file : " + file);
 		
@@ -198,26 +201,88 @@ public class UploadController {
 //	첨부파일 다운로드
 	@GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	@ResponseBody
-	public ResponseEntity<Resource> downloadFile(String fileName) {
+	public ResponseEntity<Resource> downloadFile(@RequestHeader("User-Agent") String userAgent, String fileName) {
 		
-		log.info("download file: " + fileName);
+//		log.info("download file: " + fileName);
 		
 		Resource resource = new FileSystemResource("/Users/eunjioh/Desktop/JINNY/CODING/Spring/upload/temp" + fileName);
 		
-		log.info("resource: " + resource);
+		if(resource.exists() == false) {
+			
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+//		log.info("resource: " + resource);
 		
 //		HttpHeaders 객체를 이용(다운 시 파일 이름 처리)
 		String resourceName = resource.getFilename();
 		
+		// remove UUID
+		String resourceOriginalName = resourceName.substring(resourceName.indexOf("_") + 1);
+		
 		HttpHeaders headers = new HttpHeaders();
 		
 		try {
-			headers.add("Content-Disposition", "attachment; filename=" + new String(resourceName.getBytes("UTF-8"),
-					"ISO-8859-1"));
+			String downloadName = null;
+			
+			if(userAgent.contains("Trident")) {
+				
+				log.info("IE browser");
+				
+				downloadName = URLEncoder.encode(resourceOriginalName,"UTF-8").replaceAll("\\+", " ");
+				
+//				log.info("Edge browser");
+				
+				
+			} else if(userAgent.contains("Edge")){
+				
+				log.info("Edge browser");
+				downloadName = URLEncoder.encode(resourceOriginalName,"UTF-8");
+				
+			}else {
+				
+				log.info("Chrome browser");
+				downloadName = new String(resourceOriginalName.getBytes("UTF-8"), "ISO-8859-1");
+				
+			}
+			log.info("downloadName: " + downloadName);
+			
+			headers.add("Content-Disposition", "attachment; filename=" +  downloadName);
+			
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 		
 		return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
+	}
+
+// 서버에 첨부파일의 삭제
+	@PostMapping("/deleteFile")
+	@ResponseBody
+	public ResponseEntity<String> deleteFile(String fileName, String type){
+		
+		log.info("deleteFile: " + fileName);
+		
+		File file;
+		
+		try {
+			file = new File("/Users/eunjioh/Desktop/JINNY/CODING/Spring/upload" + URLDecoder.decode(fileName, "UTF-8"));
+			
+			file.delete();
+			
+			if(type.equals("image")) {
+				
+				String largeFileName = file.getAbsolutePath().replace("s_", "");
+				
+				log.info("largeFileName : " + largeFileName);
+				
+				file = new File(largeFileName);
+				
+				file.delete();
+			}
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<String>("deleted", HttpStatus.OK);
 	}
 }
