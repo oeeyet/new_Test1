@@ -54,21 +54,17 @@ public class BoardServiceImpl implements BoardService {
 		log.info("modify......." + board);
 		return mapper.update(board) == 1;
 		
+		
 	}
+	@Transactional
 	@Override
 	public boolean remove(Long bno) {
 		log.info("remove........." + bno);
+		
+		attachMapper.deleteAll(bno);
+		
 		return mapper.delete(bno) == 1;
 	}
-//	@Override
-//	public List<BoardVO> getList() {
-//
-//	log.info("getList...........");
-//	
-//	return mapper.getList();
-//	}
-	
-
 
 	@Override
 	public List<BoardVO> getList(Criteria cri) {
