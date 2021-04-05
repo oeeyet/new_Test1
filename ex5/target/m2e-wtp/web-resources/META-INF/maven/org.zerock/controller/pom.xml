@@ -17,6 +17,21 @@
 	<dependencies>
 
 		<!-- 초기설정 -->
+		
+		<!-- 잘못 업로드 된 파일 정리  -->
+		<!-- https://mvnrepository.com/artifact/org.quartz-scheduler/quartz -->
+<dependency>
+    <groupId>org.quartz-scheduler</groupId>
+    <artifactId>quartz</artifactId>
+    <version>2.3.0</version>
+</dependency>
+		<!-- https://mvnrepository.com/artifact/org.quartz-scheduler/quartz-jobs -->
+<dependency>
+    <groupId>org.quartz-scheduler</groupId>
+    <artifactId>quartz-jobs</artifactId>
+    <version>2.3.0</version>
+</dependency>
+		
 		<!--JSON/XML변환을 위한추가 -->
 
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
