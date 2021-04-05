@@ -266,6 +266,89 @@
 				<button type="submit" data-oper='list' class="btn btn-info">List</button>
 		</div>
 	</div>
+
+		<!-- 첨부 파일 기능 -->
+			<div class='bigPictureWrapper'>
+				<div class='bigPicture'></div>
+			</div>
+			<!-- 일반 파일의 파일 처리 -->
+			<style>
+				.uploadResult {
+					width: 100%;
+					background-color: gray;
+				}
+
+				.uploadResult ul {
+					display: flex;
+					flex-flow: row;
+					justify-content: center;
+					align-items: center;
+				}
+
+				.uploadResult ul li {
+					list-style: none;
+					padding: 10px;
+					align-content: center;
+					text-align: center;
+				}
+
+				.uploadResult ul li img {
+					width: 100px;
+				}
+
+				.uploadResult ul li span {
+					color: white;
+				}
+
+				.bigPictureWrapper {
+					position: absolute;
+					display: none;
+					justify-content: center;
+					align-items: center;
+					top: 0%;
+					width: 100%;
+					height: 100%;
+					background-color: gray;
+					z-index: 100;
+					background: rgba(255, 255, 255, 0.5);
+				}
+
+				.bigPicture {
+					position: relative;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+				}
+
+				.bigPicture img {
+					width: 600px;
+				}
+			</style>
+
+			<!-- 등록을 위한 화면 처리  -->
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="panel panel-default">
+
+						<div class="panel-heading">Files</div>
+
+						<div class="panel-body">
+							<div class="form-group uploadDiv">
+								<input type="file" name='uploadFile' multiple="multiple">
+							</div>
+							<div class='uploadResult'>
+								<ul>
+
+								</ul>
+							</div>
+						</div>
+						<!-- end panel-body -->
+					</div>
+					<!-- end panel-body -->
+				</div>
+				<!-- end panel -->
+			</div>
+			<!-- /.row -->
 	</form>
 	<!-- End of Main Content -->
 
@@ -303,6 +386,68 @@
 				formObj.submit();
 			});
 		});
+	</script>
+<script>
+	$(document).ready(function(){
+
+
+		// 게시물 조회 화면 처리
+		(function () {
+
+			var bno = '${board.bno}'
+
+			$.getJSON("/board/getAttachList", { bno: bno}, function (arr) {
+
+				console.log(arr);
+
+				var str = "";
+
+				$(arr).each(function (i, attach) {
+
+					//image type
+					if (attach.fileType) {
+
+						var fileCallPath = encodeURIComponent(attach.uploadPath + "/s_" + attach.uuid + "_" + attach
+							.fileName);
+						str += "<li data-path='" + attach.uploadPath + "' data-uuid='" + attach.uuid +
+							"' data-filename='" + attach.fileName + "'data-type='" + attach.fileType + "'><div>";
+								str += "<span>" + attach.fileName+"</span>";
+								str += "<button type='button' data-file=\'"+fileCallPath+"\'data-type='image'"
+								str += "class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
+						str += "<img src='/display?fileName=" + fileCallPath + "'>";
+						str += "</div>";
+						str += "</li>";
+					} else {
+
+						str += "<li data-path='" + attach.uploadPath + "' data-uuid='" + attach.uuid +
+							"' data-filename='" + attach.fileName + "' data-type='" + attach.fileType + "' > <div>";
+						str += "<span> " + attach.fileName + "</span><br/>";
+						str += "<button type='button' data-file=\'"+fileCallPath+"\'data-type='file'"
+								str += "class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
+						str += "<img src='/resources/img/attach.png'>";
+						str += "</div>";
+						str += "</li>";
+
+					}
+				});
+				$(".uploadResult ul").html(str);
+			}); //end JSON
+
+			$(".uploadResult").on("click", "button", function(e){
+
+				console.log("delete file");
+
+				if(confirm("Remove this file? ")) {
+
+					var targetLi = $(this).closest("li");
+					targetLi.remove();
+				}
+			});
+		}());
+
+
+	});
+
 	</script>
 
 
